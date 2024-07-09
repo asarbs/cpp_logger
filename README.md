@@ -55,7 +55,7 @@ The logger supports the following log levels:
 You can set the log level using `setLogLevel()` method:
 
 ```cpp
-log.setLogLevel(logger::Logger::LogLevel::WARNING);
+logger::logger.setLogLevel(logger::Logger::LogLevel::WARNING);
 ```
 
 ## Colored Output
