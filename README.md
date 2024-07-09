@@ -38,8 +38,8 @@ int main() {
     log.setLogLevel(logger::Logger::DEBUG);
 
     log << logger::Logger::INFO << "This is an info message." << logger::Logger::end;
-    log << logger::Logger::WARNING << Color::yellow << "This is a warning message." << Color::reset << logger::Logger::end;
-    log << logger::Logger::ERROR << Color::red << "This is an error message." << Color::reset << logger::Logger::end;
+    log << logger::Logger::WARNING << "This is a warning message." << logger::Logger::end;
+    log << logger::Logger::ERROR << "This is an error message." << logger::Logger::end;
 
     return 0;
 }
