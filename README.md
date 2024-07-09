@@ -33,13 +33,11 @@ To use the logger in your project, simply include the header files and compile t
 #include "color.h"
 
 int main() {
-    logger::Logger log;
+    logger::logger.setLogLevel(logger::Logger::LogLevel::DEBUG);
 
-    log.setLogLevel(logger::Logger::DEBUG);
-
-    log << logger::Logger::INFO << "This is an info message." << logger::Logger::end;
-    log << logger::Logger::WARNING << "This is a warning message." << logger::Logger::end;
-    log << logger::Logger::ERROR << "This is an error message." << logger::Logger::end;
+    logger::logger << logger::Logger::info << "This is an info message." << logger::Logger::end;
+    logger::logger << logger::Logger::warning << "This is a warning message." << logger::Logger::end;
+    logger::logger << logger::Logger::error << "This is an error message." << logger::Logger::end;
 
     return 0;
 }
