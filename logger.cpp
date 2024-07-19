@@ -7,9 +7,7 @@
 
 logger::Logger::LogLevel logger::Logger::__currentLogLevel = logger::Logger::LogLevel::DEBUG;
 
-
-logger::Logger::Logger() {
-
+logger::Logger::Logger() : __lastLogLevel(logger::Logger::LogLevel::DBG), __outWidth(0) {
 }
 
 logger::Logger& logger::Logger::end(logger::Logger& l) {
@@ -20,6 +18,12 @@ logger::Logger& logger::Logger::end(logger::Logger& l) {
         std::cout << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %H:%M:%S") << "." << std::setfill('0') << std::setw(6) << ms.count() << l.__msg.str() << Color::reset << std::endl;
     }
     l.__msg.str("");
+    l.__outWidth = 0;
+    return l;
+}
+
+logger::Logger& logger::Logger::hex(logger::Logger& l) {
+    l.__msg << "0x" << std::setfill('0') << std::hex;
     return l;
 }
 
