@@ -34,15 +34,45 @@ To use the logger in your project, simply include the header files and compile t
 
 int main() {
     logger::logger.setLogLevel(logger::Logger::LogLevel::DEBUG);
-
-    logger::logger << logger::Logger::info << "This is an info message." << logger::Logger::end;
-    logger::logger << logger::Logger::warning << "This is a warning message." << logger::Logger::end;
-    logger::logger << logger::Logger::error << "This is an error message." << logger::Logger::end;
+    bool b = false;
+    bool x = true;
+    logger::logger << logger::Logger::debug << "simple text" << logger::Logger::end;
+    logger::logger << logger::Logger::debug << 12 << " " << " AAA " << logger::Logger::hex << logger::Logger::end;
+    logger::logger << logger::Logger::info << 12 << 15 << " " << 12.4 << " " << __LONG_LONG_MAX__ << logger::Logger::end;
+    logger::logger << logger::Logger::info << logger::Logger::hex << 0xDEADBEEF << logger::Logger::end;
+    logger::logger << logger::Logger::info << logger::Logger::hex << logger::setw(8) << 0xDE << logger::Logger::end;
+    logger::logger << logger::Logger::warning << 12 << 15 << logger::Logger::end;
+    logger::logger << logger::Logger::error << 12 << 15 << logger::Logger::end;
+    logger::logger << logger::Logger::critical << 12 << " " << 15 << " " << b << " A " << x << logger::Logger::end;
 
     return 0;
 }
 
 ```
+
+### Run Example
+type
+
+<div style="color:white; background:black">
+<code style="color:white; background:black">
+$ make run </br>
+Clean </br>
+Build file: main.cpp -> main.o </br>
+Build file: app </br>
+Exe file: app </br>
+2024-07-19 13:28:27.448274 <span style="color:purple"> [D] simple text </span></br>
+2024-07-19 13:28:27.448343 <span style="color:purple"> [D] 12  AAA 0x </span></br>
+2024-07-19 13:28:27.448363 <span style="color:green"> [I] cf 12.4 7fffffffffffffff </span></br>
+2024-07-19 13:28:27.448371 <span style="color:green"> [I] 0xdeadbeef </span></br>
+2024-07-19 13:28:27.448377 <span style="color:green"> [I] 0x000000de </span></br>
+2024-07-19 13:28:27.448382 <span style="color:yellow"> [W] cf </span></br>
+2024-07-19 13:28:27.448387 <span style="color:red"> [E] cf </span></br>
+2024-07-19 13:28:27.448392 <span style="background-color: red"> [C] c f f A t </span></br>
+</code>
+</div>
+
+
+
 
 ## Log Levels
 The logger supports the following log levels:
@@ -52,6 +82,7 @@ The logger supports the following log levels:
 - WARNING
 - ERROR
 - CRITICAL
+
 You can set the log level using `setLogLevel()` method:
 
 ```cpp
