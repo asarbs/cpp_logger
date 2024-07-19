@@ -53,6 +53,12 @@ namespace logger {
                 return *this;
             }
 
+            Logger& operator<<(unsigned int value) {
+                __msg << std::setw(__outWidth) << value;
+
+                return *this;
+            }
+
             Logger& operator<<(long long value) {
                 __msg << std::setw(__outWidth) << value;
 
@@ -150,6 +156,8 @@ namespace logger {
             }
 
             static Logger& end(Logger& l);
+
+            static Logger& hex(Logger& l);
 
             static Logger& debug(Logger& l){
                 l.__lastLogLevel = LogLevel::DEBUG;

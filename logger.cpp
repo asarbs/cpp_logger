@@ -7,7 +7,7 @@
 
 logger::Logger::LogLevel logger::Logger::__currentLogLevel = logger::Logger::LogLevel::DEBUG;
 
-logger::Logger::Logger() : __lastLogLevel(logger::Logger::LogLevel::DBG), __outWidth(0) {
+logger::Logger::Logger() : __lastLogLevel(logger::Logger::LogLevel::DEBUG), __outWidth(0) {
 }
 
 logger::Logger& logger::Logger::end(logger::Logger& l) {
