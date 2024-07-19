@@ -29,7 +29,8 @@ namespace logger {
             CRITICAL = 50,
             };
 
-            Logger();
+            Logger(): __lastLogLevel(logger::Logger::LogLevel::DEBUG), __outWidth(0)  {
+            }
 
             Logger& operator<<(bool value) {
                 
@@ -155,9 +156,22 @@ namespace logger {
                 return __p_fun(*this);
             }
 
-            static Logger& end(Logger& l);
+            static Logger& end(Logger& l) {
+                if(l.__lastLogLevel >= Logger::__currentLogLevel) {
+                    auto now = std::chrono::system_clock::now();
+                    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+                    auto ms = duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
+                    std::cout << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %H:%M:%S") << "." << std::setfill('0') << std::setw(6) << ms.count() << l.__msg.str() << Color::reset << std::endl;
+                }
+                l.__msg.str("");
+                l.__outWidth = 0;
+                return l;
+            }
 
-            static Logger& hex(Logger& l);
+            static Logger& hex(Logger& l){
+                l.__msg << "0x" << std::setfill('0') << std::hex;
+                return l;
+            }
 
             static Logger& debug(Logger& l){
                 l.__lastLogLevel = LogLevel::DEBUG;
@@ -189,13 +203,16 @@ namespace logger {
                 return l;
             }
 
-            static void setLogLevel(LogLevel newLogLevel);
+            static void setLogLevel(LogLevel newLogLevel) {
+                __currentLogLevel = newLogLevel;
+            }
+            
 
         protected:
 
         private:
             std::stringstream __msg;
-            static LogLevel   __currentLogLevel;
+            inline static LogLevel   __currentLogLevel = LogLevel::DEBUG;
             LogLevel          __lastLogLevel;
             uint8_t           __outWidth;
     };
