@@ -21,16 +21,11 @@ A simple, flexible, and color-coded logging utility for C++ applications.
 
 To use the logger in your project, simply include the header files and compile the source file along with your project.
 
-```cpp
-#include "logger.h"
-#include "color.h"
-```
 
 ## Basic Example
 ```cpp
 #include <iostream>
 #include "logger.h"
-#include "color.h"
 
 int main() {
     logger::logger.setLogLevel(logger::Logger::LogLevel::DEBUG);
