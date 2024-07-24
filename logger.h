@@ -19,7 +19,7 @@ namespace logger {
         return {__n};
     }
 
-    class Logger : public std::ostream {
+    class Logger {
         public:
             enum LogLevel {
             DEBUG = 10,
@@ -33,94 +33,96 @@ namespace logger {
             }
 
             Logger& operator<<(bool value) {
-                
-                __msg << (value == true ? "t" : "f");
+                __msg << std::setw(__outWidth) << (value == true ? "t" : "f");
+                __outWidth = 0;
                 return *this;
             }
             Logger& operator<<(uint8_t value) {
                 __msg << uint32_t(value);
+                __outWidth = 0;
                 return *this;
             }
 
             Logger& operator<<(long value) {
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
 
             Logger& operator<<(unsigned long value) {
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
 
             Logger& operator<<(unsigned int value) {
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
 
             Logger& operator<<(long long value) {
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
 
             Logger& operator<<(unsigned long long value) {
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
 
             Logger& operator<<(double value) {
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
 
             Logger& operator<<(long double value) {
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
 
             Logger& operator<<(const void* value) {
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
 
             Logger& operator<<(const volatile void* value) {
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
 
             Logger& operator<<(short value) {
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
             Logger& operator<<(const signed int value) {
                 // td::cout << "\r\n" << __FILE__ << ":" << __LINE__ << ":" << uint32_t(value) << "\"" << std::endl;
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
             Logger& operator<<(const char* value) {
                 // td::cout << "\r\n" << __FILE__ << ":" << __LINE__ << ":\"" << value << "\"" << std::endl;
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
             Logger& operator<<(const unsigned char* value) {
                 __msg << std::setw(__outWidth) << value;
-
+                __outWidth = 0;
                 return *this;
             }
 
             Logger& operator<<(const std::string& value) {
-                __msg << value;
+                __msg << std::setw(__outWidth) << value;
+                __outWidth = 0;
                 return *this;
             }
 
@@ -129,22 +131,6 @@ namespace logger {
                 __outWidth = __f._M_n;
                 return *this;
             }
-
-            // std::ostream& operator<<(unsigned short value ){
-
-            //     __msg << std::setw(__outWidth) << value;  __outWidth=0;
-            //     return *this;
-            // }
-            // std::ostream& operator<<(unsigned int value ){
-
-            //     __msg << std::setw(__outWidth) << value;  __outWidth=0;
-            //     return *this;
-            // }
-            // std::ostream& operator<<(float value ){
-
-            //     __msg << std::setw(__outWidth) << value;  __outWidth=0;
-            //     return *this;
-            // }
 
             // basic_ostream& operator<<( /* extended-floating-point-type */ value );
             // basic_ostream& operator<<(std::basic_streambuf<CharT, Traits>* sb );
@@ -165,11 +151,8 @@ namespace logger {
                 }
                 l.__msg.str("");
                 l.__outWidth = 0;
-                return l;
-            }
-
-            static Logger& hex(Logger& l){
-                l.__msg << "0x" << std::setfill('0') << std::hex;
+                l.__msg.fill(' ');
+                l.__msg.width(0);
                 return l;
             }
 
@@ -206,7 +189,8 @@ namespace logger {
             static void setLogLevel(LogLevel newLogLevel) {
                 __currentLogLevel = newLogLevel;
             }
-            
+            friend Logger& hex(Logger& l);
+            friend Logger& dec(Logger& l);
 
         protected:
 
@@ -218,18 +202,17 @@ namespace logger {
     };
 
     inline static Logger logger;
-    
+
+    inline Logger& hex(Logger& l){
+        l.__msg << "0x" << std::setfill('0') << std::hex;
+        return l;
+    }
+
+    inline Logger& dec(Logger& l) {
+        l.__msg  << std::dec;
+        return l;
+    }
 };
-
-// template <typename T> std::basic_ostream& logger::Logger::operator<<(T const& value) {
-//     const std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-//     auto diff = now - this->_begin;
-//     std::cout << std::setw(8) << duration_cast<std::chrono::nanoseconds>(diff).count() << ":" << std::setw(8) << this->_name << ":" << this->_mod << value << Color::reset << std::endl;
-// }
-
-// std::basic_ostream& operator<<( int value ) {
-    
-// }
 
 #endif // LOGGER
 
