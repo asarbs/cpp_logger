@@ -144,11 +144,9 @@ namespace logger {
 
             template<typename T>
             Logger& operator<<(_Sbit<T> __f) {
-                __msg << "b";
-                for(uint32_t i = 0 ; i < sizeof(T) * 8; i++) {
-                     __msg << ( ( __f._object & (1 << i) ) == 0 );
-                }
-
+                const static uint64_t one = 1;
+                std::bitset<sizeof(T)*8> b_obj(__f._object);
+                __msg << "b" << b_obj.to_string();
                 __outWidth = 0;
                 return *this;
             }
