@@ -31,11 +31,18 @@ int main() {
     logger::logger.setLogLevel(logger::Logger::LogLevel::DEBUG);
     bool b = false;
     bool x = true;
+
+    uint32_t AA = 0xAAAAAAAA;
+    uint32_t deadbeef = 0xDEADBEEF;
+
     logger::logger << logger::Logger::debug << "simple text" << logger::Logger::end;
-    logger::logger << logger::Logger::debug << 12 << " " << " AAA " << logger::Logger::hex << logger::Logger::end;
+    logger::logger << logger::Logger::debug << logger::setw(50) << "simple text with width 50" << logger::Logger::end;
+    logger::logger << logger::Logger::debug << "12 hex with 10: " << logger::hex << logger::setw(10) << 12 << logger::dec << logger::Logger::end;
+    logger::logger << logger::Logger::debug << 12 << " " << " AAA " << logger::hex << 12 << logger::dec << logger::Logger::end;
     logger::logger << logger::Logger::info << 12 << 15 << " " << 12.4 << " " << __LONG_LONG_MAX__ << logger::Logger::end;
-    logger::logger << logger::Logger::info << logger::Logger::hex << 0xDEADBEEF << logger::Logger::end;
-    logger::logger << logger::Logger::info << logger::Logger::hex << logger::setw(8) << 0xDE << logger::Logger::end;
+    logger::logger << logger::Logger::info << "print in hex: " << logger::hex << deadbeef << logger::dec << " print in dex:" << deadbeef << logger::Logger::end;
+    logger::logger << logger::Logger::info << "print " << logger::hex << AA << " in bin: " << logger::bit(static_cast<void*>(&AA), 32) << logger::Logger::end;
+    logger::logger << logger::Logger::info << "print hex with leading 0: " << logger::hex << logger::setw(8) << 0xDE << logger::dec<< logger::Logger::end;
     logger::logger << logger::Logger::warning << 12 << 15 << logger::Logger::end;
     logger::logger << logger::Logger::error << 12 << 15 << logger::Logger::end;
     logger::logger << logger::Logger::critical << 12 << " " << 15 << " " << b << " A " << x << logger::Logger::end;
@@ -47,23 +54,10 @@ int main() {
 
 ### Run Example
 type
-
-<div style="color:white; background:black">
-<code style="color:white; background:black">
-$ make run </br>
-Clean </br>
-Build file: main.cpp -> main.o </br>
-Build file: app </br>
-Exe file: app </br>
-2024-07-19 13:28:27.448274 <span style="color:purple"> [D] simple text </span></br>
-2024-07-19 13:28:27.448343 <span style="color:purple"> [D] 12  AAA 0x </span></br>
-2024-07-19 13:28:27.448363 <span style="color:green"> [I] cf 12.4 7fffffffffffffff </span></br>
-2024-07-19 13:28:27.448371 <span style="color:green"> [I] 0xdeadbeef </span></br>
-2024-07-19 13:28:27.448377 <span style="color:green"> [I] 0x000000de </span></br>
-2024-07-19 13:28:27.448382 <span style="color:yellow"> [W] cf </span></br>
-2024-07-19 13:28:27.448387 <span style="color:red"> [E] cf </span></br>
-2024-07-19 13:28:27.448392 <span style="background-color: red"> [C] c f f A t </span></br>
-</code>
+```shell
+$ make run
+```
+![console output](doc/output.png)
 </div>
 
 

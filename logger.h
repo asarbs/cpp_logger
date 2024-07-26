@@ -19,6 +19,15 @@ namespace logger {
         return {__n};
     }
 
+    struct _Sbit {
+        const void* _object;
+        size_t _size;
+    };
+
+    inline _Sbit bit(const void* object, size_t size) {
+        return { object, size };
+    }
+
     class Logger {
         public:
             enum LogLevel {
@@ -129,6 +138,18 @@ namespace logger {
             Logger& operator<<(_Setw __f) {
                 // td::cout << "\r\n" << __FILE__ << ":" << __LINE__ << ":\"" << uint32_t(__f._M_n) << "\"" << std::endl;
                 __outWidth = __f._M_n;
+                return *this;
+            }
+
+            Logger& operator<<(_Sbit __f) {
+                const uint32_t obj = *(static_cast<const uint32_t*>(__f._object));
+
+                __msg << "b";
+                for(uint32_t i = 0 ; i < __f._size ; i++) {
+                     __msg << ( ( obj & (1 << i) ) == 0 );
+                }
+
+                __outWidth = 0;
                 return *this;
             }
 
