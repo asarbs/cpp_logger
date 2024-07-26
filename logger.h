@@ -19,13 +19,14 @@ namespace logger {
         return {__n};
     }
 
+    template<typename T>
     struct _Sbit {
-        const void* _object;
-        size_t _size;
+        T _object;
     };
 
-    inline _Sbit bit(const void* object, size_t size) {
-        return { object, size };
+    template<typename T>
+    inline _Sbit<T> bit(T object) {
+        return { object };
     }
 
     class Logger {
@@ -141,12 +142,11 @@ namespace logger {
                 return *this;
             }
 
-            Logger& operator<<(_Sbit __f) {
-                const uint32_t obj = *(static_cast<const uint32_t*>(__f._object));
-
+            template<typename T>
+            Logger& operator<<(_Sbit<T> __f) {
                 __msg << "b";
-                for(uint32_t i = 0 ; i < __f._size ; i++) {
-                     __msg << ( ( obj & (1 << i) ) == 0 );
+                for(uint32_t i = 0 ; i < sizeof(T) * 8; i++) {
+                     __msg << ( ( __f._object & (1 << i) ) == 0 );
                 }
 
                 __outWidth = 0;
