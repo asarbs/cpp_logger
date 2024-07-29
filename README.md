@@ -12,7 +12,6 @@ A simple, flexible, and color-coded logging utility for C++ applications.
 ## Files
 
 - `logger.h`: Header file defining the Logger class and its functionalities.
-- `logger.cpp`: Implementation of the Logger class.
 - `color.h`: Header file for color definitions and utilities for terminal output.
 
 ## Usage
