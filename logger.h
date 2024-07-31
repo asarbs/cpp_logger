@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <chrono>
 #include <string>
+#include <bitset>
 
 #include "color.h"
 
