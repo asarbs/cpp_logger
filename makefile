@@ -15,10 +15,25 @@ endif
 
 GCC = g++
 USER_DIR=./test_src
+
+TARGET_NAME := app
+prof: TARGET_NAME := prof_app
+
 GTEST_DIR=./libs/googletest/googletest
-CPP_FLAGS := -g -isystem -Wall -pthread -lpthread -std=c++20 -fpermissive
+CPPFLAGS_PROD := 
+prof: CPPFLAGS_PROD += -pg
+CPPFLAGS_PROD += -g 
+CPPFLAGS_PROD += -isystem 
+CPPFLAGS_PROD += -Wall 
+CPPFLAGS_PROD += -pthread 
+CPPFLAGS_PROD += -lpthread 
+CPPFLAGS_PROD += -std=c++20 
+CPPFLAGS_PROD += -fpermissive
+
+
 CXXFLAGS := -g -Wall -Wextra -pthread
-CPPFLAGS := -g -Wall -Wextra -pthread -isystem $(GTEST_DIR)/include
+CPPFLAGS_TEST := -g -Wall -Wextra -pthread -isystem $(GTEST_DIR)/include
+
 
 SOURCES_C := 
 
@@ -39,8 +54,8 @@ TEST_OBJS += $(TEST_SOURCES_C:%.c=%.o)
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
 INCLUDES :=
-INCLUDES += libs/googletest/googletest/include/gtest/internal/
-INCLUDES += libs/googletest/googletest/include/
+test: INCLUDES += libs/googletest/googletest/include/gtest/internal/
+test: INCLUDES += libs/googletest/googletest/include/
 INCLUDES += .
 INCLUDES_PARAMS=$(foreach d, $(INCLUDES), -I"${PWD}/$d")
 
@@ -49,44 +64,55 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 
 gtest-all.o : $(GTEST_SRCS_)
 	@echo 'Build file: $< -> $@'
-	$(Q)$(GCC) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c $(GTEST_DIR)/src/gtest-all.cc
+	$(Q)$(GCC) $(CPPFLAGS_TEST) -I$(GTEST_DIR) $(CXXFLAGS) -c $(GTEST_DIR)/src/gtest-all.cc
 
 gtest_main.o : $(GTEST_SRCS_)
 	@echo 'Build file: $< -> $@'
-	$(Q)$(GCC) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c $(GTEST_DIR)/src/gtest_main.cc
+	$(Q)$(GCC) $(CPPFLAGS_TEST) -I$(GTEST_DIR) $(CXXFLAGS) -c $(GTEST_DIR)/src/gtest_main.cc
 
 clean:
 	@echo 'Clean'
 	${Q}rm -rf test_exe
-	${Q}rm -rf app
+	${Q}rm -rf $(TARGET_NAME)
+	${Q}rm -rf gmon.out
 	${Q}find . -name "*.o" | xargs -r rm 
 	
 %.o : %.cpp
-	@echo 'Build file: $< -> $@'
-	$(Q)$(GCC) $(CPP_FLAGS) $(INCLUDES_PARAMS) -c -o "$@" "$<"
+	@echo 'Build object file: $< -> $@'
+	$(Q)$(GCC) $(CPPFLAGS_PROD) $(INCLUDES_PARAMS) -c -o "$@" "$<"
 
 %.o: %.c
 	@echo 'Build file: $< -> $@'
-	$(Q)$(GCC) $(CPP_FLAGS) $(INCLUDES_PARAMS) -c -o "$@" "$<"
+	$(Q)$(GCC) $(CPPFLAGS_PROD) $(INCLUDES_PARAMS) -c -o "$@" "$<"
 	
 
 test_filter: $(TEST_OBJS) gtest-all.o gtest_main.o 
 	@echo 'Build file: test_main'
-	$(Q)$(GCC) $(CPP_FLAGS) $(INCLUDES_PARAMS) $^ -o test_exe
+	$(Q)$(GCC) $(CPPFLAGS_PROD) $(INCLUDES_PARAMS) $^ -o test_exe
 	./test_exe --gtest_filter=$(FILTER)
 	
 test: $(TEST_OBJS) gtest-all.o gtest_main.o 
 	@echo 'Build file: test_main'
-	$(Q)$(GCC) $(CPP_FLAGS) $(INCLUDES_PARAMS) $^ -o test_exe
+	$(Q)$(GCC) $(CPPFLAGS_PROD) $(INCLUDES_PARAMS) $^ -o test_exe
 	./test_exe
 
 build: clean $(OBJS) 
-	@echo 'Build file: app'
-	$(Q)$(GCC) $(CPP_FLAGS) $(INCLUDES_PARAMS) $(OBJS) -o app 
+	@echo 'Build executable file: $(TARGET_NAME)'
+	$(Q)$(GCC) $(CPPFLAGS_PROD) $(INCLUDES_PARAMS) $(OBJS) -o $(TARGET_NAME) 
 
 run: build
-	@echo 'Exe file: app'
-	$(Q)./app
+	@echo 'Exe file: $(TARGET_NAME)'
+	$(Q)./$(TARGET_NAME)
+
+prof: build
+	@echo "Prof: $(TARGET_NAME)"
+	$(Q)./$(TARGET_NAME) 
+	$(Q)gprof ./$(TARGET_NAME) gmon.out > analysis.txt
+
+
+valgrind: build
+	@echo "Valgrind: $(TARGET_NAME)"
+	$(Q) valgrind --tool=massif  ./$(TARGET_NAME)
 
 all: test_exe app
 	$(Q)./test_exe --gtest_output=xml
