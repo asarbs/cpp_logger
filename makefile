@@ -112,7 +112,7 @@ prof: build
 
 valgrind: build
 	@echo "Valgrind: $(TARGET_NAME)"
-	$(Q) valgrind --tool=massif  ./$(TARGET_NAME)
+	$(Q) valgrind --tool=massif ./$(TARGET_NAME)
 
 all: test_exe app
 	$(Q)./test_exe --gtest_output=xml

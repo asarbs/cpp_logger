@@ -30,17 +30,33 @@ namespace logger {
         return { object };
     }
 
+    class LogLevel2;
+
     class Logger {
         public:
-            enum LogLevel {
-            DEBUG = 10,
-            INFO = 20,
-            WARNING = 30,
-            ERROR = 40,
-            CRITICAL = 50,
+
+            class LogLevel {
+                public:
+                    LogLevel(uint32_t level, Color::Modifier color, const char* sign): __level(level), __color(color), __sign(0) {
+                        memcpy(static_cast<void*>(&__sign), static_cast<const void*>(sign), sizeof(char));
+                    };
+
+                    Logger& operator<<(Logger& in) {
+                        return in;
+                    }
+
+                    uint32_t __level;
+                    char __sign; 
+                    Color::Modifier __color;
+                protected:
+                private:
+                    LogLevel();
+                    LogLevel(LogLevel& o);
+                    LogLevel operator=(LogLevel o);
+
             };
 
-            Logger(): __lastLogLevel(logger::Logger::LogLevel::DEBUG), __outWidth(0)  {
+            Logger(): __lastLogLevel(0), __outWidth(0)  {
             }
 
             Logger& operator<<(bool value) {
@@ -162,7 +178,7 @@ namespace logger {
             }
 
             static Logger& end(Logger& l) {
-                if(l.__lastLogLevel >= Logger::__currentLogLevel) {
+                if(l.__lastLogLevel >= l.__currentLogLevel) {
                     auto now = std::chrono::system_clock::now();
                     auto in_time_t = std::chrono::system_clock::to_time_t(now);
                     auto ms = duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
@@ -175,38 +191,16 @@ namespace logger {
                 return l;
             }
 
-            static Logger& debug(Logger& l){
-                l.__lastLogLevel = LogLevel::DEBUG;
-                l.__msg  << Color::magenta << "[D] ";
-                
-                return l;
-            }
-            static Logger& info(Logger& l){
-                l.__lastLogLevel = LogLevel::INFO;
-                l.__msg << Color::green << "[I] ";
-                
-                return l;
-            }
-            static Logger& warning(Logger& l){
-                l.__lastLogLevel = LogLevel::WARNING;
-                l.__msg << Color::yellow << "[W] ";
-                return l;
-            }
-            static Logger& error(Logger& l){
-                l.__lastLogLevel = LogLevel::ERROR;
-                l.__msg << Color::red << "[E] ";
-                
-                return l;
-            }
-            static Logger& critical(Logger& l){
-                l.__lastLogLevel = LogLevel::CRITICAL;
-                l.__msg << Color::bg_red << "[C] ";
-                
-                return l;
-            }
+            Logger& operator<<(const LogLevel& in) {
 
-            static void setLogLevel(LogLevel newLogLevel) {
-                __currentLogLevel = newLogLevel;
+                this->__lastLogLevel = in.__level;
+                this->__msg << in.__color << "[" << in.__sign << "] ";
+
+                return *this;
+            }   
+
+            void setLogLevel(const LogLevel& in) {
+                __currentLogLevel = in.__level;
             }
             friend Logger& hex(Logger& l);
             friend Logger& dec(Logger& l);
@@ -215,12 +209,18 @@ namespace logger {
 
         private:
             std::stringstream __msg;
-            inline static LogLevel   __currentLogLevel = LogLevel::DEBUG;
-            LogLevel          __lastLogLevel;
+            uint32_t __currentLogLevel = 0;
+            uint32_t          __lastLogLevel;
             uint8_t           __outWidth;
     };
 
     inline static Logger logger;
+
+    inline static logger::Logger::LogLevel debug(10, Color::magenta, "D"); 
+    inline static logger::Logger::LogLevel info(20, Color::green, "I"); 
+    inline static logger::Logger::LogLevel warning(30, Color::yellow, "W"); 
+    inline static logger::Logger::LogLevel error(40, Color::red, "E"); 
+    inline static logger::Logger::LogLevel critical(50, Color::bg_red, "C"); 
 
     inline Logger& hex(Logger& l){
         l.__msg << "0x" << std::setfill('0') << std::hex;
