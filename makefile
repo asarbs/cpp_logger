@@ -95,8 +95,8 @@ test_filter: $(TEST_OBJS) gtest-all.o gtest_main.o
 	
 test: $(TEST_OBJS) gtest-all.o gtest_main.o 
 	@echo 'Build file: test_main'
-	$(Q)$(GCC) $(CPPFLAGS_PROD) $(INCLUDES_PARAMS) $^ -o test_exe
-	./test_exe
+	$(Q)$(GCC) $(CPPFLAGS_PROD) $(INCLUDES_PARAMS) $^ -o test_exe 
+	./test_exe --gtest_catch_exceptions=0
 
 build: clean $(OBJS) 
 	@echo 'Build executable file: $(TARGET_NAME)'

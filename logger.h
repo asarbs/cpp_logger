@@ -10,6 +10,8 @@
 #include <vector>
 #include <cstring>
 #include <algorithm>
+#include <stdexcept>
+#include <exception>
 
 #include "color.h"
 
@@ -47,7 +49,7 @@ namespace logger {
                             // std::cout << Color::green << "Created:" << __level  << Color::reset<< std::endl;
                             __level_collection.push_back(__level);
                         } else {
-                            throw std::logic_error("LogLevel used");
+                            throw std::logic_error("LogLevel already used.");
                         }
                     };
 

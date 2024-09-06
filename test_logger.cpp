@@ -1,5 +1,8 @@
 #include "gtest/gtest.h"
 
+#include <stdexcept>
+#include <exception>
+
 #include "logger.h"
 
 class LoggerTest : public testing::Test {};
@@ -120,9 +123,8 @@ TEST_F(LoggerTest, create_new_log_level) {
 }
 
 TEST_F(LoggerTest, create_new_log_levels_with_the_same_level_number) {
-    logger::Logger::LogLevel new_log_level1(60, Color::BG_BLUE, "A");
-    EXPECT_THROW( { 
-        logger::Logger::LogLevel new_log_level2(60, Color::BG_GREEN, "B"); 
-        }, std::logic_error );
+    logger::Logger::LogLevel new_log_level1(70, Color::BG_BLUE, "A");
+
+    EXPECT_THROW(logger::Logger::LogLevel new_log_level2(70, Color::BG_GREEN, "B"), std::logic_error);
 
 }
