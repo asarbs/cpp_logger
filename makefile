@@ -39,6 +39,7 @@ SOURCES_C :=
 
 SOURCES_CPP := 
 SOURCES_CPP += main.cpp
+SOURCES_CPP += logger.cpp
 
 OBJS := 
 OBJS += $(SOURCES_C:%.c=%.o)
@@ -46,6 +47,7 @@ OBJS += $(SOURCES_CPP:%.cpp=%.o)
 
 TEST_SOURCES_C :=
 TEST_SOURCES_CPP := test_logger.cpp
+TEST_SOURCES_CPP +=logger.cpp
 
 TEST_OBJS :=
 TEST_OBJS += $(TEST_SOURCES_CPP:%.cpp=%.o)
@@ -93,8 +95,8 @@ test_filter: $(TEST_OBJS) gtest-all.o gtest_main.o
 	
 test: $(TEST_OBJS) gtest-all.o gtest_main.o 
 	@echo 'Build file: test_main'
-	$(Q)$(GCC) $(CPPFLAGS_PROD) $(INCLUDES_PARAMS) $^ -o test_exe
-	./test_exe
+	$(Q)$(GCC) $(CPPFLAGS_PROD) $(INCLUDES_PARAMS) $^ -o test_exe 
+	./test_exe --gtest_catch_exceptions=0
 
 build: clean $(OBJS) 
 	@echo 'Build executable file: $(TARGET_NAME)'
@@ -112,7 +114,7 @@ prof: build
 
 valgrind: build
 	@echo "Valgrind: $(TARGET_NAME)"
-	$(Q) valgrind --tool=massif  ./$(TARGET_NAME)
+	$(Q) valgrind --tool=massif ./$(TARGET_NAME)
 
 all: test_exe app
 	$(Q)./test_exe --gtest_output=xml
