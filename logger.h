@@ -41,136 +41,45 @@ namespace logger {
 
             class LogLevel {
                 public:
-                    LogLevel(uint32_t level, Color::Modifier color, const char* sign): __level(level), __color(color), __sign(0) {
-                        memcpy(static_cast<void*>(&__sign), static_cast<const void*>(sign), sizeof(char));
+                    LogLevel(uint32_t level, Color::Modifier color, const char* sign);
 
-                        auto it = std::find(__level_collection.begin(), __level_collection.end(), __level);
-                        if(it == __level_collection.end()) {
-                            // std::cout << Color::green << "Created:" << __level  << Color::reset<< std::endl;
-                            __level_collection.push_back(__level);
-                        } else {
-                            throw std::logic_error("LogLevel already used.");
-                        }
-                    };
+                    Logger&         operator<<(Logger& in);
+                    uint32_t        get_level() const;
+                    char            get_sign()  const;
+                    Color::Modifier get_color() const;
 
-                    Logger& operator<<(Logger& in) {
-                        return in;
-                    }
-
-                    uint32_t __level;
-                    char __sign; 
-                    Color::Modifier __color;
                 protected:
                 private:
                     LogLevel();
                     LogLevel(LogLevel& o);
                     LogLevel operator=(LogLevel o);
+
                     static std::vector<uint32_t> __level_collection;
+                    uint32_t __level;
+                    char __sign; 
+                    Color::Modifier __color;
             };
 
-            Logger(): __lastLogLevel(0), __outWidth(0)  {
-            }
-
-            Logger& operator<<(bool value) {
-                __msg << std::setw(__outWidth) << (value == true ? "t" : "f");
-                __outWidth = 0;
-                return *this;
-            }
-            Logger& operator<<(uint8_t value) {
-                __msg << uint32_t(value);
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(long value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(unsigned long value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(unsigned int value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(long long value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(unsigned long long value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(double value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(long double value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(const void* value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(const volatile void* value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(short value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-            Logger& operator<<(const signed int value) {
-                // td::cout << "\r\n" << __FILE__ << ":" << __LINE__ << ":" << uint32_t(value) << "\"" << std::endl;
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-            Logger& operator<<(const char* value) {
-                // td::cout << "\r\n" << __FILE__ << ":" << __LINE__ << ":\"" << value << "\"" << std::endl;
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-            Logger& operator<<(const unsigned char* value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(const std::string& value) {
-                __msg << std::setw(__outWidth) << value;
-                __outWidth = 0;
-                return *this;
-            }
-
-            Logger& operator<<(_Setw __f) {
-                // td::cout << "\r\n" << __FILE__ << ":" << __LINE__ << ":\"" << uint32_t(__f._M_n) << "\"" << std::endl;
-                __outWidth = __f._M_n;
-                return *this;
-            }
-
+            Logger();
+            Logger& operator<<(bool value);
+            Logger& operator<<(uint8_t value);
+            Logger& operator<<(long value);
+            Logger& operator<<(unsigned long value);
+            Logger& operator<<(unsigned int value);
+            Logger& operator<<(long long value);
+            Logger& operator<<(unsigned long long value);
+            Logger& operator<<(double value);
+            Logger& operator<<(long double value);
+            Logger& operator<<(const void* value);
+            Logger& operator<<(const volatile void* value);
+            Logger& operator<<(short value);
+            Logger& operator<<(const signed int value);
+            Logger& operator<<(const char* value);
+            Logger& operator<<(const unsigned char* value);
+            Logger& operator<<(const std::string& value);
+            Logger& operator<<(_Setw __f);
+            Logger& operator<<(const LogLevel& in);
+            Logger& operator<<(Logger& (*__p_fun)(Logger&));
             template<typename T>
             Logger& operator<<(_Sbit<T> __f) {
                 std::bitset<sizeof(T)*8> b_obj(__f._object);
@@ -178,45 +87,16 @@ namespace logger {
                 __outWidth = 0;
                 return *this;
             }
+            static Logger& end(Logger& l);
+            void setLogLevel(const LogLevel& in);
+            friend Logger& hex(Logger& l);
+            friend Logger& dec(Logger& l);
 
             // basic_ostream& operator<<( /* extended-floating-point-type */ value );
             // basic_ostream& operator<<(std::basic_streambuf<CharT, Traits>* sb );
             // basic_ostream& operator<<(std::ios_base& (*func)(std::ios_base&) );
             // basic_ostream& operator<<(std::basic_ios<CharT, Traits>& (*func)(std::basic_ios<CharT, Traits>&) );
             // basic_ostream& operator<<(std::basic_ostream<CharT, Traits>& (*func)(std::basic_ostream<CharT, Traits>&) );
-
-            Logger& operator<<(Logger& (*__p_fun)(Logger&)) {
-                return __p_fun(*this);
-            }
-
-            static Logger& end(Logger& l) {
-                if(l.__lastLogLevel >= l.__currentLogLevel) {
-                    auto now = std::chrono::system_clock::now();
-                    auto in_time_t = std::chrono::system_clock::to_time_t(now);
-                    auto ms = duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
-                    std::cout << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %H:%M:%S") << "." << std::setfill('0') << std::setw(6) << ms.count() << l.__msg.str() << Color::reset << std::endl;
-                }
-                l.__msg.str("");
-                l.__outWidth = 0;
-                l.__msg.fill(' ');
-                l.__msg.width(0);
-                return l;
-            }
-
-            Logger& operator<<(const LogLevel& in) {
-
-                this->__lastLogLevel = in.__level;
-                this->__msg << in.__color << "[" << in.__sign << "] ";
-
-                return *this;
-            }   
-
-            void setLogLevel(const LogLevel& in) {
-                __currentLogLevel = in.__level;
-            }
-            friend Logger& hex(Logger& l);
-            friend Logger& dec(Logger& l);
-
         protected:
 
         private:
@@ -234,15 +114,8 @@ namespace logger {
     extern logger::Logger::LogLevel error    ;//    = {40, Color::red,      "E"}; 
     extern logger::Logger::LogLevel critical ;//    = {50, Color::bg_red,   "C"}; 
 
-    inline Logger& hex(Logger& l){
-        l.__msg << "0x" << std::setfill('0') << std::hex;
-        return l;
-    }
-
-    inline Logger& dec(Logger& l) {
-        l.__msg  << std::dec;
-        return l;
-    }
+    Logger& hex(Logger& l);
+    Logger& dec(Logger& l);
 };
 
 #endif // LOGGER
