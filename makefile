@@ -39,6 +39,7 @@ SOURCES_C :=
 
 SOURCES_CPP := 
 SOURCES_CPP += main.cpp
+SOURCES_CPP += logger.cpp
 
 OBJS := 
 OBJS += $(SOURCES_C:%.c=%.o)
@@ -46,6 +47,7 @@ OBJS += $(SOURCES_CPP:%.cpp=%.o)
 
 TEST_SOURCES_C :=
 TEST_SOURCES_CPP := test_logger.cpp
+TEST_SOURCES_CPP +=logger.cpp
 
 TEST_OBJS :=
 TEST_OBJS += $(TEST_SOURCES_CPP:%.cpp=%.o)

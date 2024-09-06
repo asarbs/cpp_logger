@@ -106,3 +106,23 @@ TEST_F (LoggerTest, format_UINT64_MAX_hex_and_bin){
 
     EXPECT_EQ(output, "\x1B[32m[I] print uint64_t:0xffffffffffffffff in bin: b1111111111111111111111111111111111111111111111111111111111111111\x1B[0m\n");
 }
+
+TEST_F(LoggerTest, create_new_log_level) {
+    testing::internal::CaptureStdout();
+
+    logger::Logger::LogLevel new_log_level(60, Color::BG_BLUE, "A");
+
+    logger::logger.setLogLevel(new_log_level);
+    logger::logger << new_log_level << "Test Str" << logger::Logger::end;
+    std::string output = testing::internal::GetCapturedStdout().substr(26);
+
+    EXPECT_EQ(output, "\x1B[44m[A] Test Str\x1B[0m\n");    
+}
+
+TEST_F(LoggerTest, create_new_log_levels_with_the_same_level_number) {
+    logger::Logger::LogLevel new_log_level1(60, Color::BG_BLUE, "A");
+    EXPECT_THROW( { 
+        logger::Logger::LogLevel new_log_level2(60, Color::BG_GREEN, "B"); 
+        }, std::logic_error );
+
+}

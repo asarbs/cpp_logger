@@ -7,6 +7,9 @@
 #include <chrono>
 #include <string>
 #include <bitset>
+#include <vector>
+#include <cstring>
+#include <algorithm>
 
 #include "color.h"
 
@@ -30,7 +33,6 @@ namespace logger {
         return { object };
     }
 
-    class LogLevel2;
 
     class Logger {
         public:
@@ -39,6 +41,14 @@ namespace logger {
                 public:
                     LogLevel(uint32_t level, Color::Modifier color, const char* sign): __level(level), __color(color), __sign(0) {
                         memcpy(static_cast<void*>(&__sign), static_cast<const void*>(sign), sizeof(char));
+
+                        auto it = std::find(__level_collection.begin(), __level_collection.end(), __level);
+                        if(it == __level_collection.end()) {
+                            // std::cout << Color::green << "Created:" << __level  << Color::reset<< std::endl;
+                            __level_collection.push_back(__level);
+                        } else {
+                            throw std::logic_error("LogLevel used");
+                        }
                     };
 
                     Logger& operator<<(Logger& in) {
@@ -53,7 +63,7 @@ namespace logger {
                     LogLevel();
                     LogLevel(LogLevel& o);
                     LogLevel operator=(LogLevel o);
-
+                    static std::vector<uint32_t> __level_collection;
             };
 
             Logger(): __lastLogLevel(0), __outWidth(0)  {
@@ -216,11 +226,11 @@ namespace logger {
 
     inline static Logger logger;
 
-    inline static logger::Logger::LogLevel debug(10, Color::magenta, "D"); 
-    inline static logger::Logger::LogLevel info(20, Color::green, "I"); 
-    inline static logger::Logger::LogLevel warning(30, Color::yellow, "W"); 
-    inline static logger::Logger::LogLevel error(40, Color::red, "E"); 
-    inline static logger::Logger::LogLevel critical(50, Color::bg_red, "C"); 
+    extern logger::Logger::LogLevel debug    ;//    = {10, Color::magenta,  "D"}; 
+    extern logger::Logger::LogLevel info     ;//    = {20, Color::green,    "I"}; 
+    extern logger::Logger::LogLevel warning  ;//    = {30, Color::yellow,   "W"}; 
+    extern logger::Logger::LogLevel error    ;//    = {40, Color::red,      "E"}; 
+    extern logger::Logger::LogLevel critical ;//    = {50, Color::bg_red,   "C"}; 
 
     inline Logger& hex(Logger& l){
         l.__msg << "0x" << std::setfill('0') << std::hex;

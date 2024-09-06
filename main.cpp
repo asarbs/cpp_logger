@@ -44,6 +44,12 @@ int main() {
     logger::logger << logger::error << 12 << 15 << logger::Logger::end;
     logger::logger << logger::critical << 12 << " " << 15 << " " << b << " A " << x << logger::Logger::end;
 
+    logger::Logger::LogLevel new_log_level(60, Color::BG_BLUE, "A");
+    logger::logger.setLogLevel(new_log_level);
+    logger::logger << new_log_level << "Test Str" << logger::Logger::end;
+
+    logger::Logger::LogLevel new_log_level2(60, Color::BG_GREEN, "B");
+
     return 0;
 }
 
