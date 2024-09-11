@@ -134,18 +134,18 @@ logger::Logger& logger::Logger::operator<<(const logger::Logger::LogLevel& in) {
     return *this;
 }
 
-logger::Logger&  logger::Logger::end(logger::Logger& l) {
-    if(l.__lastLogLevel >= l.__currentLogLevel) {
+logger::Logger&  logger::Logger::__flush() {
+    if(__lastLogLevel >= __currentLogLevel) {
         auto now = std::chrono::system_clock::now();
         auto in_time_t = std::chrono::system_clock::to_time_t(now);
         auto ms = duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
-        std::cout << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %H:%M:%S") << "." << std::setfill('0') << std::setw(6) << ms.count() << l.__msg.str() << Color::reset << std::endl;
+        std::cout << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %H:%M:%S") << "." << std::setfill('0') << std::setw(6) << ms.count() << __msg.str() << Color::reset << std::endl;
     }
-    l.__msg.str("");
-    l.__outWidth = 0;
-    l.__msg.fill(' ');
-    l.__msg.width(0);
-    return l;
+    __msg.str("");
+    __outWidth = 0;
+    __msg.fill(' ');
+    __msg.width(0);
+    return *this;
 }
 
 void logger::Logger::setLogLevel(const logger::Logger::LogLevel& in) {
@@ -160,4 +160,8 @@ logger::Logger& logger::hex(logger::Logger& l){
 logger::Logger& logger::dec(logger::Logger& l) {
     l.__msg  << std::dec;
     return l;
+}
+
+logger::Logger& logger::endl(logger::Logger& l) {
+    return l.__flush();
 }

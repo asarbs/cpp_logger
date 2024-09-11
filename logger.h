@@ -35,7 +35,6 @@ namespace logger {
         return { object };
     }
 
-
     class Logger {
         public:
 
@@ -87,10 +86,10 @@ namespace logger {
                 __outWidth = 0;
                 return *this;
             }
-            static Logger& end(Logger& l);
             void setLogLevel(const LogLevel& in);
             friend Logger& hex(Logger& l);
             friend Logger& dec(Logger& l);
+            friend Logger& endl(Logger& l);
 
             // basic_ostream& operator<<( /* extended-floating-point-type */ value );
             // basic_ostream& operator<<(std::basic_streambuf<CharT, Traits>* sb );
@@ -104,6 +103,8 @@ namespace logger {
             uint32_t __currentLogLevel = 0;
             uint32_t          __lastLogLevel;
             uint8_t           __outWidth;
+
+            Logger& __flush();
     };
 
     inline static Logger logger;
@@ -116,6 +117,7 @@ namespace logger {
 
     Logger& hex(Logger& l);
     Logger& dec(Logger& l);
+    Logger& endl(Logger& l);
 };
 
 #endif // LOGGER

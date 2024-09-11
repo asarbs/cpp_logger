@@ -75,6 +75,8 @@ gtest_main.o : $(GTEST_SRCS_)
 clean:
 	@echo 'Clean'
 	${Q}rm -rf test_exe
+	${Q}rm -rf prof_app
+	${Q}rm -rf *.txt
 	${Q}rm -rf $(TARGET_NAME)
 	${Q}rm -rf gmon.out
 	${Q}find . -name "*.o" | xargs -r rm 
