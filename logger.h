@@ -35,6 +35,17 @@ namespace logger {
         return { object };
     }
 
+    template<typename T>
+    struct _SArray {
+        const T* _object;
+        size_t _size;
+    };
+
+    template<typename T>
+    inline _SArray<T> array(const T* object, size_t size) {
+        return {object, size};
+    }
+
     class Logger {
         public:
 
@@ -83,6 +94,14 @@ namespace logger {
             Logger& operator<<(_Sbit<T> __f) {
                 std::bitset<sizeof(T)*8> b_obj(__f._object);
                 __msg << "b" << b_obj.to_string();
+                __outWidth = 0;
+                return *this;
+            }
+            template<typename T>
+            Logger& operator<<(_SArray<T> __f) {
+                for(uint32_t index = 0 ; index < __f._size; index++) {
+                    __msg << std::setw(2) << std::setfill('0') << std::hex << (uint64_t)(__f._object[index]) << " ";
+                }
                 __outWidth = 0;
                 return *this;
             }
