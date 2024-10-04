@@ -69,8 +69,7 @@ namespace logger {
                     char __sign; 
                     Color::Modifier __color;
             };
-
-            Logger();
+            static Logger& getInstance();
             Logger& operator<<(bool value);
             Logger& operator<<(uint8_t value);
             Logger& operator<<(long value);
@@ -118,6 +117,16 @@ namespace logger {
         protected:
 
         private:
+            Logger();
+
+            // Remove the ability to copy and assign
+            Logger(const Logger&)            = delete;
+            Logger& operator=(const Logger&) = delete;
+
+            // Remove the ability to move
+            Logger(Logger&&)            = delete;
+            Logger& operator=(Logger&&) = delete;
+
             std::stringstream __msg;
             uint32_t __currentLogLevel = 0;
             uint32_t          __lastLogLevel;
@@ -126,7 +135,7 @@ namespace logger {
             Logger& __flush();
     };
 
-    inline static Logger logger;
+    extern Logger& logger;
 
     extern logger::Logger::LogLevel debug    ;//    = {10, Color::magenta,  "D"}; 
     extern logger::Logger::LogLevel info     ;//    = {20, Color::green,    "I"}; 

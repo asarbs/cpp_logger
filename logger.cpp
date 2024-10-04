@@ -3,7 +3,7 @@
 
 std::vector<uint32_t> logger::Logger::LogLevel::__level_collection = std::vector<uint32_t>();
 
-logger::Logger::LogLevel::LogLevel(uint32_t level, Color::Modifier color, const char* sign): __level(level), __color(color), __sign(0) {
+logger::Logger::LogLevel::LogLevel(uint32_t level, Color::Modifier color, const char* sign): __level(level), __sign(0), __color(color) {
     memcpy(static_cast<void*>(&__sign), static_cast<const void*>(sign), sizeof(char));
     auto it = std::find(__level_collection.begin(), __level_collection.end(), __level);
     if(it == __level_collection.end()) {
@@ -34,7 +34,15 @@ logger::Logger::LogLevel logger::warning    = {30, Color::yellow,   "W"};
 logger::Logger::LogLevel logger::error      = {40, Color::red,      "E"}; 
 logger::Logger::LogLevel logger::critical   = {50, Color::bg_red,   "C"}; 
 
+logger::Logger& logger::Logger::getInstance() {
+    static logger::Logger inst;
+    return inst;
+}
+
+logger::Logger& logger::logger = logger::Logger::getInstance();
+
 logger::Logger::Logger(): __lastLogLevel(0), __outWidth(0)  {
+
 }
 
 logger::Logger& logger::Logger::operator<<(bool value) {
