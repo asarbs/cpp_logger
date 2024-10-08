@@ -13,7 +13,7 @@ else
 Q ?= @
 endif
 
-GCC = g++
+GCC = clang++-18
 USER_DIR=./test_src
 
 TARGET_NAME := app
@@ -25,9 +25,9 @@ prof: CPPFLAGS_PROD += -pg
 CPPFLAGS_PROD += -g 
 CPPFLAGS_PROD += -isystem 
 CPPFLAGS_PROD += -Wall 
+CPPFLAGS_PROD += -pedantic
 CPPFLAGS_PROD += -pthread 
-CPPFLAGS_PROD += -lpthread 
-CPPFLAGS_PROD += -std=c++20 
+CPPFLAGS_PROD += -std=c++20
 CPPFLAGS_PROD += -fpermissive
 
 
@@ -63,6 +63,12 @@ INCLUDES_PARAMS=$(foreach d, $(INCLUDES), -I"${PWD}/$d")
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
+
+.setup:
+	wget https://apt.llvm.org/llvm.sh
+	chmod 777 llvm.sh
+	./llvm.sh
+	rm llvm.sh
 
 gtest-all.o : $(GTEST_SRCS_)
 	@echo 'Build file: $< -> $@'

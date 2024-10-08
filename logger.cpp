@@ -143,7 +143,7 @@ logger::Logger& logger::Logger::operator<<(const logger::Logger::LogLevel& in) {
 }
 
 logger::Logger&  logger::Logger::__flush() {
-    if(__lastLogLevel >= __currentLogLevel) {
+    if(__lastLogLevel <= __currentLogLevel) {
         auto now = std::chrono::system_clock::now();
         auto in_time_t = std::chrono::system_clock::to_time_t(now);
         auto ms = duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
