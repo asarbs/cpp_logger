@@ -4,6 +4,22 @@
 
 #include <ostream>
 
+/*
+ANSI Color Table with Brightness:
+
+Color          | Color Code | Normal           | Bright            | Dim
+-------------- | ---------- | ---------------- | ----------------- | ----------------
+Black          | 30         | \x1b[30;22m     | \x1b[30;1m       | \x1b[30;2m
+Red            | 31         | \x1b[31;22m     | \x1b[31;1m       | \x1b[31;2m
+Green          | 32         | \x1b[32;22m     | \x1b[32;1m       | \x1b[32;2m
+Yellow         | 33         | \x1b[33;22m     | \x1b[33;1m       | \x1b[33;2m
+Blue           | 34         | \x1b[34;22m     | \x1b[34;1m       | \x1b[34;2m
+Purple         | 35         | \x1b[35;22m     | \x1b[35;1m       | \x1b[35;2m
+Cyan           | 36         | \x1b[36;22m     | \x1b[36;1m       | \x1b[36;2m
+White          | 37         | \x1b[37;22m     | \x1b[37;1m       | \x1b[37;2m
+*/
+
+
 namespace Color {
     enum Code {
         FG_RED      = 31,
