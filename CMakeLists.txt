@@ -12,7 +12,7 @@ add_library(cpp_logger_lib STATIC
     logger.h
 )
 
-target_compile_options(cpp_logger_lib PRIVATE -Wall -Wextra)
+target_compile_options(cpp_logger_lib PRIVATE -Wall)
 
 install(TARGETS cpp_logger_lib
         ARCHIVE DESTINATION lib
